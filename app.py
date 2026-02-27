@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import logging
 
 total_id=1
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -19,6 +22,11 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,11 +42,13 @@ class Users(db.Model):
 
 
 @app.route("/")
+@limiter.exempt
 def index():
     return "Homepage"
 
 
 @app.route("/api/users", methods=["GET"])
+@limiter.limit("30 per minute")
 def get_users():
     logger.debug("Fetching all users from database")
     page = request.args.get("page", default=1, type=int)
@@ -83,12 +93,12 @@ def get_users():
 
 
 @app.route("/api/users", methods=["POST"])
+@limiter.limit("30 per minute")
 def add_user():
     logger.debug(f"Adding user")
     data = request.get_json()
-    total_id+=1
     new_user = Users(
-        id=total_id,
+        id=data["id"],
         first_name=data["first_name"],
         last_name=data["last_name"],
         company=data["company"],
@@ -105,6 +115,7 @@ def add_user():
 
 
 @app.route("/api/users/<int:id>", methods=["GET"])
+@limiter.limit("30 per minute")
 def get_user(id):
     logger.debug(f"Getting user with id={id}")
     user = Users.query.get(id)
