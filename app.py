@@ -4,7 +4,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import logging
 
-total_id=1
 
 
 logging.basicConfig(
@@ -98,7 +97,6 @@ def add_user():
     logger.debug(f"Adding user")
     data = request.get_json()
     new_user = Users(
-        id=data["id"],
         first_name=data["first_name"],
         last_name=data["last_name"],
         company=data["company"],
@@ -181,7 +179,6 @@ def delete_user(id):
         return "User not found"
     db.session.delete(user)
     db.session.commit()
-    total_id-=1
     logger.debug("Deleted user")
 
 
@@ -252,7 +249,7 @@ if __name__ == "__main__":
         if Users.query.count() == 0:
             sample_users = [
                 Users(
-                    id=1,
+                    
                     first_name="John",
                     last_name="Doe",
                     company="HPE",
@@ -264,7 +261,6 @@ if __name__ == "__main__":
                     web="john.com",
                 ),
                 Users(
-                    id=2,
                     first_name="Jane",
                     last_name="Doe",
                     company="Microsoft",
@@ -276,7 +272,6 @@ if __name__ == "__main__":
                     web="jane.com",
                 ),
                 Users(
-                    id=3,
                     first_name="Mike",
                     last_name="Ross",
                     company="PS",
@@ -288,7 +283,6 @@ if __name__ == "__main__":
                     web="mike.com",
                 ),
                 Users(
-                    id=4,
                     first_name="Harvey",
                     last_name="Specter",
                     company="PS",
@@ -300,7 +294,6 @@ if __name__ == "__main__":
                     web="harvey.com",
                 ),
                 Users(
-                    id=5,
                     first_name="Harry",
                     last_name="Potter",
                     company="Google",
@@ -312,7 +305,6 @@ if __name__ == "__main__":
                     web="potter.com",
                 ),
                 Users(
-                    id=6,
                     first_name="Ron",
                     last_name="Weasley",
                     company="JPMC",
@@ -336,7 +328,6 @@ if __name__ == "__main__":
                     web="snape.com",
                 ),
                 Users(
-                    id=8,
                     first_name="Albus",
                     last_name="Dumbledore",
                     company="HP",
@@ -348,7 +339,6 @@ if __name__ == "__main__":
                     web="dumb.com",
                 ),
                 Users(
-                    id=9,
                     first_name="Rubeus",
                     last_name="Hagrid",
                     company="Morgan Stanley",
@@ -360,7 +350,6 @@ if __name__ == "__main__":
                     web="hagrid.com",
                 ),
                 Users(
-                    id=10,
                     first_name="Draco",
                     last_name="Malfoy",
                     company="Deloitte",
@@ -372,7 +361,6 @@ if __name__ == "__main__":
                     web="malfoy.com",
                 ),
                 Users(
-                    id=11,
                     first_name="Lucius",
                     last_name="Malfoy",
                     company="Infosys",
@@ -384,7 +372,6 @@ if __name__ == "__main__":
                     web="lucius.com",
                 ),
                 Users(
-                    id=12,
                     first_name="Tom",
                     last_name="Riddle",
                     company="Cisco",
@@ -396,7 +383,6 @@ if __name__ == "__main__":
                     web="riddle.com",
                 ),
             ]
-            total_id=12
 
             db.session.add_all(sample_users)
             db.session.commit()
